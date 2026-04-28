@@ -1,19 +1,16 @@
-import dotenv from "dotenv";
-import app from "./app.js";
-import { connectDB } from "./config/db.js";
+import express from "express";
+import cors from "cors";
 
-dotenv.config();
+const app = express();
 
-const PORT = process.env.PORT || 5000;
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true
+}));
 
-async function start() {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
+app.use(express.json());
 
-start().catch((error) => {
-  console.error("Server startup failed:", error);
-  process.exit(1);
-});
+// routes
+app.use("/api/auth", authRoutes);
+
+export default app;
